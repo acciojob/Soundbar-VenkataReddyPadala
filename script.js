@@ -1,26 +1,42 @@
-const buttons = document.querySelectorAll('.btn');
-const stopBtn = document.querySelector('.stop');
-const audios = [];
+const sounds = ['applause', 'boo', 'gasp', 'tada', 'victory', 'wrong']; 
 
-for (let i = 1; i <= 6; i++) {
-  const audio = document.getElementById(`audio${i}`);
-  audio.src = "data:audio/mp3;base64,//uQxAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAACcQCAAwACABAAZGF0YQAAAAA=";
-  audios.push(audio);
-}
+const buttonsContainer = document.getElementById('buttons');
 
-function stopAll() {
-  audios.forEach(a => {
-    a.pause();
-    a.currentTime = 0;
-  });
-}
+sounds.forEach(sound => {
+  const btn = document.createElement('button');
+  btn.classList.add('btn');
+  btn.innerText = sound;
+  btn.setAttribute('data-sound', sound);  
+  
 
-buttons.forEach((btn, i) => {
   btn.addEventListener('click', () => {
-    stopAll();
-    const audio = audios[i];
-    audio.play().catch(() => {});
+    stopSounds();  
+    const audio = document.getElementById(sound);
+    if (audio) audio.play();  
   });
+
+  buttonsContainer.appendChild(btn);
+
+  const audio = document.createElement('audio');
+  audio.src = `./sounds/${sound}.mp3`;  
+  audio.id = sound;  
+  document.body.appendChild(audio);
 });
 
-stopBtn.addEventListener('click', stopAll);
+const stopBtn = document.createElement('button');
+stopBtn.classList.add('btn', 'stop');
+stopBtn.innerText = 'Stop';
+stopBtn.setAttribute('data-sound', 'stop');  
+stopBtn.addEventListener('click', stopSounds);
+buttonsContainer.appendChild(stopBtn);
+
+// Stop all sounds
+function stopSounds() {
+  sounds.forEach(sound => {
+    const audio = document.getElementById(sound);
+    if (audio) {
+      audio.pause();
+      audio.currentTime = 0;  
+    }
+  });
+}
